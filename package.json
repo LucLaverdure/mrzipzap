@@ -14,5 +14,8 @@
   },
   "build": {
     "icon": "assets/logo"
+  },
+  "dependencies": {
+    "jquery": "^3.7.1"
   }
 }

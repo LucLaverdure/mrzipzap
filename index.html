@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mr Zip Zap</title>
     <link rel="stylesheet" href="style.css">
+    <script src="jquery.min.js" type="text/javascript"></script>
+    <script src="renderer.js" type="text/javascript"></script>
 </head>
 <body>
     <header class="header">
@@ -15,9 +17,9 @@
         <!-- Left Pane: Folder Tree -->
         <div class="pane folder-tree">
             <div class="dir-bar local-dir">
-                <input id="folderPath" type="text" placeholder="Directory Path..." />
+                <input id="local_dir_path" type="text" placeholder="Directory Path..." value="/Users/ruku/Documents/www" />
                 <button id="select-folder">...</button>
-                <button id="listFilesBtn">Go</button>
+                <button id="list_local_files_button">Go</button>
             </div>
             <div class="file-list">
                 <table>
@@ -29,8 +31,7 @@
                         <th>Date Modified</th>
                     </tr>
                     </thead>
-                    <tbody id="fileList">
-                        <script src="renderer.js"></script>
+                    <tbody id="local_file_list">
                     </tbody>
                 </table>
             </div>
@@ -45,5 +46,6 @@
             </div>
         </div>
     </div>
+
 </body>
 </html>
