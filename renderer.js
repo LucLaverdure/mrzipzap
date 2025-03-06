@@ -12,6 +12,16 @@ $(document).ready(function () {
 
     console.log("clicker");
 
+    $(document).on('click', 'a.dir-link', async function () {
+        let new_dir = $('#local_dir_path').val();
+        if (!new_dir.endsWith("/")) {
+            new_dir = new_dir + "/";
+        }
+        new_dir = new_dir + $(this).text();
+        $('#local_dir_path').val(new_dir);
+        $("#list_local_files_button").click();
+    });
+
     // Trigger file listing when the button is clicked
     $('#list_local_files_button').on('click', async function () {
         const folderPath = $('#local_dir_path').val(); // Get the folder path from the textbox
@@ -36,12 +46,25 @@ $(document).ready(function () {
                 tableBody.append('<tr><td colspan="4">No files found in this folder.</td></tr>');
             } else {
                 // Display the list of files with details
+                tableBody.append(`
+                        <tr>
+                            <th><input type="checkbox" /></th>
+                            <td><a class="dir-link" href="#" class="folder">..</a></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    `);
+
                 files.forEach((file) => {
+                    let name = file.name;
+                    if (file.isDirectory) {
+                        name = `<a class="dir-link" href="#" class="folder">${name}</a>`;
+                    }
                     tableBody.append(`
                         <tr>
-                            <th><input type="checkbox" />></th>
-                            <td>${file.name}</td>
-                            <td>${file.isDirectory ? '-' : formatSize(file.size)}</td>
+                            <th><input type="checkbox" /></th>
+                            <td>${name}</td>
+                            <td>${file.isDirectory ? '' : formatSize(file.size)}</td>
                             <td>${new Date(file.modifiedDate).toLocaleString()}</td>
                         </tr>
                     `);
@@ -52,4 +75,7 @@ $(document).ready(function () {
             alert('An error occurred. Check the console for details.');
         }
     });
+
+    $("#list_local_files_button").click();
+
 });

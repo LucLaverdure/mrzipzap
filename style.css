@@ -99,3 +99,46 @@ h1 img {
     color: #ffdd00; /* Lightning yellow */
     text-shadow: 0 0 5px rgba(255, 255, 0, 0.8);
 }
+
+/* Input Styling */
+.dir-bar input[type="text"] {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.3s ease;
+    width: calc(100% - 125px);
+}
+
+.dir-bar input[type="text"]:focus {
+    border-color: #007bff; /* Highlight border on focus */
+    box-shadow: 0 0 4px rgba(0, 123, 255, 0.3);
+}
+
+/* Button Styling */
+.dir-bar button {
+    padding: 10px 15px;
+    background-color: #007bff; /* Primary blue button */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.dir-bar button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+.dir-bar button:active {
+    transform: scale(0.95); /* Slight scale-down on click */
+}
+a.dir-link {
+    color: yellow;
+}
+a.dir-link:hover {
+    color: white;
+}

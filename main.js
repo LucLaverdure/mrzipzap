@@ -6,8 +6,8 @@ let mainWindow;
 
 app.on('ready', () => {
     mainWindow = new BrowserWindow({
-        width: 800,
-        height: 600,
+        width: 1024,
+        height: 768,
         webPreferences: { nodeIntegration: true, contextIsolation: false },
         icon: path.join(__dirname, 'assets', 'logo.png'), // Path to your icon
     });
@@ -29,6 +29,14 @@ ipcMain.handle('list-files', async (event, folderPath) => {
                 isDirectory: stats.isDirectory(), // Check if it's a directory
             };
         });
+
+        // Sort: Directories first, then files, then alphabetically by name
+        fileDetails.sort((a, b) => {
+            if (a.isDirectory && !b.isDirectory) return -1; // Directories come first
+            if (!a.isDirectory && b.isDirectory) return 1;  // Files come after directories
+            return a.name.localeCompare(b.name); // Alphabetical order
+        });
+
         return fileDetails;
     } catch (error) {
         console.error('Error reading directory:', error);
