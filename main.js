@@ -12,7 +12,8 @@ app.on('ready', () => {
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: true,
-            contextIsolation: false
+            contextIsolation: false,
+            enableRemoteModule: false
         },
         icon: path.join(__dirname, 'assets', 'logo.png'), // Path to your icon
     });

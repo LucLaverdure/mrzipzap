@@ -10,12 +10,10 @@ const formatSize = (bytes) => {
 
 $(document).ready(function () {
 
-    $(document).on('click', 'button#local-zip', async function () {
-        const files = $.map($('#local_file_list input[type="checkbox"]:checked').closest('tr'), (row) => {
-            return $(row).find('td:nth-child(2) a.dir-link').attr('data-dir');
+    $(document).on('click', '#local-zip', async function () {
+        let files = $.map($('#local_file_list input[type="checkbox"]:checked').closest('tr'), (row) => {
+            return $(row).find('.pointer').attr('data-dir');
         });
-
-        // const files = $.map($('#file-input')[0].files, (file) => file.path); // Get file paths
 
         const outputZipPath = `${__dirname}/output.zip`; // Define output location
 
@@ -116,10 +114,8 @@ $(document).ready(function () {
                 files.forEach((file) => {
                     let name = file.name;
                     let icon = file.isDirectory ? 'fas fa-folder' : 'fas fa-file';
-                    if (file.isDirectory) {
-                        let dir =  (path) => path.replace(/\/?$/, '/');
-                        name = `<a class="dir-link" href="#" class="folder" data-dir="${dir+name}">${name}</a>`;
-                    }
+                    let dir = folderPath.replace(/\/?$/, '/');
+                    name = file.isDirectory ? `<a class="dir-link pointer" href="#" class="folder" data-dir="${dir}${name}">${name}</a>` : `<span class="pointer" data-dir="${dir}${name}">${name}</span>`;
                     tableBody.append(`
                         <tr>
                             <td class="op"><input type="checkbox" /></td>
