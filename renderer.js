@@ -1,6 +1,3 @@
-const { ipcRenderer } = require('electron');
-const $ = require('jquery'); // Import jQuery
-
 const formatSize = (bytes) => {
     if (bytes < 1024) return `${bytes} B`;
     else if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(2)} KB`;
@@ -8,14 +5,14 @@ const formatSize = (bytes) => {
     return `${(bytes / (1024 * 1024 * 1024)).toFixed(2)} GB`;
 };
 
-$(document).ready(function () {
+jQuery(document).ready(function ($) {
 
     $(document).on('click', '#local-zip', async function () {
         let files = $.map($('#local_file_list input[type="checkbox"]:checked').closest('tr'), (row) => {
             return $(row).find('.pointer').attr('data-dir');
         });
 
-        const outputZipPath = `${__dirname}/output.zip`; // Define output location
+        const outputZipPath = `tmp-mr-zip-zap.zip`; // Define output location
 
         // Start zipping via IPC
         window.electron.zipFiles(files, outputZipPath);
@@ -47,7 +44,7 @@ $(document).ready(function () {
         checkbox.prop('checked', !checkbox.prop('checked'));
     });
 
-    $(document).on('keypress', '#local_dir_path', async function () {
+    $(document).on('keypress', '#local_dir_path', async function (event) {
         if (event.which === 13) {
             $("#list_local_files_button").click();
         }
@@ -55,9 +52,8 @@ $(document).ready(function () {
 
     $(document).on('click', '#select-folder', async function () {
         const input = document.getElementById('local_dir_path');
-        const button = document.getElementById('select-folder');
         // Ask the main process to open the directory dialog
-        const selectedDirectory = await ipcRenderer.invoke('open-directory');
+        const selectedDirectory = await window.electron.invoke('open-directory');
         if (selectedDirectory) {
             // Update the input field with the selected directory path
             input.value = selectedDirectory;
@@ -89,7 +85,7 @@ $(document).ready(function () {
 
         try {
             // Ask the main process to list files in the specified folder
-            const files = await ipcRenderer.invoke('list-files', folderPath);
+            const files = await window.electron.invoke('list-files', folderPath);
 
             const tableBody = $('#local_file_list');
             tableBody.empty(); // Clear previous results
@@ -105,7 +101,7 @@ $(document).ready(function () {
                 tableBody.append(`
                         <tr>
                             <td class="op">&nbsp;</td>
-                            <td><a class="dir-link" href="#" class="folder">..</a></td>
+                            <td><i style="color:yellow;" class="fas fa-folder" aria-hidden="true"></i><a class="dir-link" href="#" class="folder">..</a></td>
                             <td>&nbsp;</td>
                             <td>&nbsp;</td>
                         </tr>
@@ -121,7 +117,7 @@ $(document).ready(function () {
                             <td class="op"><input type="checkbox" /></td>
                             <td><i style="color:yellow;" class="${icon}" aria-hidden="true"></i> ${name}</td>
                             <td>${file.isDirectory ? '' : formatSize(file.size)}</td>
-                            <td>${new Date(file.modifiedDate).toLocaleString()}</td>
+                            <td>${file.modifiedDate}</td>
                         </tr>
                     `);
                 });

@@ -11,8 +11,8 @@ app.on('ready', () => {
         height: 1024,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
-            nodeIntegration: true,
-            contextIsolation: false,
+            nodeIntegration: false,
+            contextIsolation: true,
             enableRemoteModule: true
         },
         icon: path.join(__dirname, 'assets', 'logo.png'), // Path to your icon
@@ -28,10 +28,20 @@ ipcMain.handle('list-files', async (event, folderPath) => {
             const filePath = path.join(folderPath, file);
             const stats = fs.statSync(filePath); // Get file details
 
+            // Format the date
+            const formattedDate = stats.mtime.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: '2-digit', // Full month name (e.g., "January")
+                day: '2-digit', // Day with leading zero
+                hour: '2-digit', // Hour in 12-hour format
+                minute: '2-digit', // Minutes with leading zero
+                second: '2-digit', // Seconds with leading zero
+            });
+
             return {
                 name: file,
                 size: stats.size, // File size in bytes
-                modifiedDate: stats.mtime, // Last modified date
+                modifiedDate: formattedDate, // Last modified date
                 isDirectory: stats.isDirectory(), // Check if it's a directory
             };
         });
@@ -64,7 +74,7 @@ ipcMain.handle('open-directory', async () => {
 ipcMain.on('zip-files', async (event, { files, outputZipPath }) => {
     try {
         // Create a zip stream
-        const output = fs.createWriteStream(outputZipPath);
+        const output = fs.createWriteStream(__dirname + '/' + outputZipPath);
         const archive = archiver('zip', { zlib: { level: 9 } });
 
         // Handle progress and completion

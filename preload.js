@@ -13,4 +13,7 @@ contextBridge.exposeInMainWorld('electron', {
 
     // Expose error listener
     onError: (callback) => ipcRenderer.on('zip-error', (event, error) => callback(error)),
+
+    invoke: (channel, args) => ipcRenderer.invoke(channel, args),
+
 });
