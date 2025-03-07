@@ -293,3 +293,16 @@ table td.op {
     justify-content: center;
     height: 100%;
 }
+.mid-actions p {
+    line-height: 35px;
+    text-align: right;
+}
+.mid-actions h2 {
+    color: yellow;
+}
+
+button:disabled, button:disabled:hover {
+    background-color: #ccc; /* Gray background */
+    color: #666; /* Dimmed text color */
+    cursor: not-allowed; /* Show "not-allowed" cursor */
+}

@@ -45,8 +45,8 @@
 
             <div class="actions">
                 <button id="zip">Zip</button>
-                <button id="zip-upload">Zip & Upload</button>
-                <button id="zip-upload-unzip">Zip & Upload & Unzip</button>
+                <button id="zip-upload" disabled>Zip & Upload</button>
+                <button id="zip-upload-unzip" disabled>Zip & Upload & Unzip</button>
             </div>
 
         </div>
@@ -55,7 +55,18 @@
         <div class="pane ">
 
             <div class="mid-actions">
-                <button id="ssh">Connect to SSH</button>
+                <div>
+                    <h2>Protocol: SSH</h2>
+                    <hr/>
+                    <p>
+                        Host: <input id="remote_host" type="text" placeholder="Host" /> <br/>
+                        Port: <input id="remote_port" type="text" placeholder="Port" value="22" /> <br/>
+                        User: <input id="remote_user" type="text" placeholder="User" /> <br/>
+                        Pass: <input id="remote_pass" type="password" placeholder="Password" /> <br/>
+                        <br/>
+                        <button id="ssh">Connect</button>
+                    </p>
+                </div>
             </div>
 
         </div>
