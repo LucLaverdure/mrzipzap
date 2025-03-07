@@ -10,6 +10,36 @@ const formatSize = (bytes) => {
 
 $(document).ready(function () {
 
+    $(document).on('click', 'button#local-zip', async function () {
+        const files = $.map($('#local_file_list input[type="checkbox"]:checked').closest('tr'), (row) => {
+            return $(row).find('td:nth-child(2) a.dir-link').attr('data-dir');
+        });
+
+        // const files = $.map($('#file-input')[0].files, (file) => file.path); // Get file paths
+
+        const outputZipPath = `${__dirname}/output.zip`; // Define output location
+
+        // Start zipping via IPC
+        window.electron.zipFiles(files, outputZipPath);
+
+        // Listen for progress updates
+        window.electron.onProgress((percent) => {
+            const $progressBar = $('#progress-bar');
+            $progressBar.css('width', `${percent}%`);
+            $progressBar.text(`${percent}%`);
+        });
+
+        // Handle completion
+        window.electron.onDone(() => {
+            alert('Zipping completed successfully!');
+        });
+
+        // Handle errors
+        window.electron.onError((error) => {
+            alert(`Error: ${error}`);
+        });
+    });
+
     $(document).on('click', 'table tr td', async function () {
         if ($(this).hasClass('op')) {
             return;
@@ -87,7 +117,8 @@ $(document).ready(function () {
                     let name = file.name;
                     let icon = file.isDirectory ? 'fas fa-folder' : 'fas fa-file';
                     if (file.isDirectory) {
-                        name = `<a class="dir-link" href="#" class="folder">${name}</a>`;
+                        let dir =  (path) => path.replace(/\/?$/, '/');
+                        name = `<a class="dir-link" href="#" class="folder" data-dir="${dir+name}">${name}</a>`;
                     }
                     tableBody.append(`
                         <tr>

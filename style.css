@@ -306,3 +306,24 @@ button:disabled, button:disabled:hover {
     color: #666; /* Dimmed text color */
     cursor: not-allowed; /* Show "not-allowed" cursor */
 }
+
+#progress-container {
+    margin: 20px 0;
+    width: 100%;
+    max-width: 400px;
+}
+
+#progress-bar {
+    width: 0;
+    height: 24px;
+    background-color: #4caf50;
+    text-align: center;
+    color: white;
+    line-height: 24px;
+}
+
+#progress-container {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    overflow: hidden;
+}
