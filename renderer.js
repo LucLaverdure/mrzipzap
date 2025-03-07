@@ -10,7 +10,14 @@ const formatSize = (bytes) => {
 
 $(document).ready(function () {
 
-    console.log("clicker");
+    $(document).on('click', 'table tr td', async function () {
+        if ($(this).hasClass('op')) {
+            return;
+        }
+        const row = $(this).closest('tr');
+        const checkbox = row.find('input[type="checkbox"]');
+        checkbox.prop('checked', !checkbox.prop('checked'));
+    });
 
     $(document).on('keypress', '#local_dir_path', async function () {
         if (event.which === 13) {
@@ -69,22 +76,23 @@ $(document).ready(function () {
                 // Display the list of files with details
                 tableBody.append(`
                         <tr>
-                            <th><input type="checkbox" /></th>
+                            <td class="op">&nbsp;</td>
                             <td><a class="dir-link" href="#" class="folder">..</a></td>
-                            <td></td>
-                            <td></td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
                         </tr>
                     `);
 
                 files.forEach((file) => {
                     let name = file.name;
+                    let icon = file.isDirectory ? 'fas fa-folder' : 'fas fa-file';
                     if (file.isDirectory) {
                         name = `<a class="dir-link" href="#" class="folder">${name}</a>`;
                     }
                     tableBody.append(`
                         <tr>
-                            <th><input type="checkbox" /></th>
-                            <td>${name}</td>
+                            <td class="op"><input type="checkbox" /></td>
+                            <td><i style="color:yellow;" class="${icon}" aria-hidden="true"></i> ${name}</td>
                             <td>${file.isDirectory ? '' : formatSize(file.size)}</td>
                             <td>${new Date(file.modifiedDate).toLocaleString()}</td>
                         </tr>

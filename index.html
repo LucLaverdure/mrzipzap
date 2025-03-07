@@ -4,7 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mr Zip Zap</title>
+    <link rel="stylesheet" href="assets/css/font-awesome.min.css">
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="assets/logo.ico" type="image/x-icon">
+    <link rel="icon" href="assets/logo.png" type="image/png">
+    <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
     <script src="jquery.min.js" type="text/javascript"></script>
     <script src="renderer.js" type="text/javascript"></script>
 </head>
@@ -36,17 +40,27 @@
                     </tbody>
                 </table>
             </div>
+
+            <hr />
+
+            <div class="actions">
+                <button id="zip">Zip</button>
+                <button id="zip-upload">Zip & Upload</button>
+                <button id="zip-upload-unzip">Zip & Upload & Unzip</button>
+            </div>
+
         </div>
 
         <!-- Right Pane: File List -->
         <div class="pane ">
-            <div class="dir-bar remote-dir">
-                <input type="text" placeholder="Directory Path..." />
-                <button>...</button>
-                <button>Go</button>
+
+            <div class="mid-actions">
+                <button id="ssh">Connect to SSH</button>
             </div>
+
         </div>
     </div>
+
 
 </body>
 </html>

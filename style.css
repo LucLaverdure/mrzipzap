@@ -108,7 +108,7 @@ header h1 {
 }
 
 .file-list td {
-    padding: 10px;
+    padding: 0;
     border-bottom: 1px solid #505050;
 }
 
@@ -129,7 +129,9 @@ header h1 {
     flex-grow: 1;
     padding: 10px;
     border: 1px solid #ccc;
-    border-radius: 5px;
+    background: #202020;
+    color: greenyellow;
+    border-radius: 0;
     font-size: 14px;
     outline: none;
     transition: border-color 0.3s ease;
@@ -142,7 +144,7 @@ header h1 {
 }
 
 /* Button Styling */
-.dir-bar button {
+body button {
     padding: 10px 15px;
     background-color: #007bff; /* Primary blue button */
     color: #fff;
@@ -153,11 +155,11 @@ header h1 {
     transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.dir-bar button:hover {
+body button:hover {
     background-color: #0056b3; /* Darker blue on hover */
 }
 
-.dir-bar button:active {
+body button:active {
     transform: scale(0.95); /* Slight scale-down on click */
 }
 a.dir-link {
@@ -254,7 +256,7 @@ tbody {
     overflow-y: auto; /* Enable vertical scrolling */
     width: 100%; /* Ensure proper alignment with the table header */
     max-width: 100%;
-    height: calc( 100vh - 300px); /* Full height minus header and directory bar */
+    height: calc( 100vh - 335px); /* Full height minus header and directory bar */
     overflow-x: hidden; /* Hide horizontal scrollbar */
 }
 
@@ -265,11 +267,29 @@ tbody tr, thead tr {
 }
 
 tbody td {
-    padding: 10px;
+    padding: 0;
     text-align: left;
 }
 
 /* Optional: Highlight rows on hover */
 tbody tr:hover {
     background-color: #f1f1f1;
+}
+table td.op {
+    width: 30px;
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: flex-end;
+    text-align: right;
+}
+.mid-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
 }

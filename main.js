@@ -6,8 +6,8 @@ let mainWindow;
 
 app.on('ready', () => {
     mainWindow = new BrowserWindow({
-        width: 1024,
-        height: 768,
+        width: 1400,
+        height: 1024,
         webPreferences: { nodeIntegration: true, contextIsolation: false },
         icon: path.join(__dirname, 'assets', 'logo.png'), // Path to your icon
     });
