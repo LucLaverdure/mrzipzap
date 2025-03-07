@@ -70,12 +70,30 @@ ipcMain.handle('open-directory', async () => {
     return result.canceled ? null : result.filePaths[0];
 });
 
+// Helper function to fetch all files recursively
+function getAllFiles(filePaths) {
+    let allFiles = [];
+
+    filePaths.forEach((filePath) => {
+        if (fs.statSync(filePath).isDirectory()) {
+            // If it's a directory, read its contents
+            const subFiles = fs.readdirSync(filePath).map((subFile) => path.join(filePath, subFile));
+            allFiles = allFiles.concat(getAllFiles(subFiles)); // Recursively fetch files
+        } else {
+            // If it's a file, add it to the list
+            allFiles.push(filePath);
+        }
+    });
+
+    return allFiles;
+}
+
 // Handle zipping in the main process
 ipcMain.on('zip-files', async (event, { files, outputZipPath }) => {
     try {
         // Create a zip stream
         const output = fs.createWriteStream(__dirname + '/' + outputZipPath);
-        const archive = archiver('zip', { zlib: { level: 9 } });
+        const archive = archiver('zip', { zlib: { level: 9 }, statConcurrency: 8 });
 
         // Handle progress and completion
         archive.on('progress', (progress) => {
@@ -94,8 +112,10 @@ ipcMain.on('zip-files', async (event, { files, outputZipPath }) => {
         // Pipe archive data to the file
         archive.pipe(output);
 
+        const allFiles = getAllFiles(files);
+
         // Append files to the archive
-        files.forEach((file) => {
+        allFiles.forEach((file) => {
             const fileName = path.basename(file); // Extract file name
             archive.file(file, { name: fileName });
         });
