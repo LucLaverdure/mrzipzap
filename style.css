@@ -8,6 +8,7 @@ body, html {
     height: 100%;
     display: flex;
     flex-direction: column;
+    overflow: hidden; /* Prevent page scrolling */
 }
 
 h1, h2 {
@@ -16,6 +17,22 @@ h1, h2 {
 
 h1 img {
     width: 75px;
+}
+
+header {
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+header h1 {
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 /* Header Style */
@@ -33,6 +50,10 @@ h1 img {
 .container {
     display: flex;
     flex: 1;
+    overflow: hidden;
+    height: calc(100% - 50px); /* Full height minus header height */
+    padding: 10px;
+    box-sizing: border-box;
     overflow: hidden;
 }
 
@@ -76,11 +97,14 @@ h1 img {
 }
 
 .file-list th {
+    position:sticky;
+    top: 0;
     background-color: #1e1e20;
     color: #ffdd00; /* Lightning yellow */
     padding: 10px;
     border-bottom: 2px solid #505050;
     text-align: left;
+    z-index: 1;
 }
 
 .file-list td {
@@ -158,7 +182,7 @@ a.dir-link:hover {
     width: 100%; /* Full width */
     display: flex;
     flex-direction: column;
-    background-color: #f9f9f9;
+    background-color: #000;
     border: 1px solid #ddd;
     border-radius: 5px;
     overflow: hidden;
@@ -169,9 +193,9 @@ a.dir-link:hover {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 10px;
+    padding: 10px 0;
     border-bottom: 1px solid #ddd;
-    background-color: #f0f0f0;
+    background-color: #000;
 }
 
 .dir-bar input {
@@ -209,6 +233,7 @@ table {
     width: 100%;
     border-collapse: collapse;
     border: 1px solid #ddd;
+    box-sizing: border-box;
 }
 
 thead th {
@@ -224,13 +249,16 @@ thead th {
 
 /* Scrollable Tbody */
 tbody {
+    box-sizing: border-box;
     display: block;
     overflow-y: auto; /* Enable vertical scrolling */
-    max-height: 100%; /* Allow the tbody to take up the available space */
     width: 100%; /* Ensure proper alignment with the table header */
+    max-width: 100%;
+    height: calc( 100vh - 300px); /* Full height minus header and directory bar */
+    overflow-x: hidden; /* Hide horizontal scrollbar */
 }
 
-tbody tr {
+tbody tr, thead tr {
     display: table;
     width: 100%;
     table-layout: fixed; /* Ensure consistent column widths */
