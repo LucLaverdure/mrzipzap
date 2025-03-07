@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const fs = require('fs');
 const path = require('path');
 
@@ -42,4 +42,14 @@ ipcMain.handle('list-files', async (event, folderPath) => {
         console.error('Error reading directory:', error);
         return { error: 'Failed to read the directory. Make sure the path is correct.' };
     }
+});
+
+// Handle the "open-directory" event from the renderer process
+ipcMain.handle('open-directory', async () => {
+    const result = await dialog.showOpenDialog(mainWindow, {
+        properties: ['openDirectory'], // Open directory only
+    });
+
+    // Return the selected directory path or undefined if canceled
+    return result.canceled ? null : result.filePaths[0];
 });

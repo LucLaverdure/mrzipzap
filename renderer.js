@@ -12,6 +12,27 @@ $(document).ready(function () {
 
     console.log("clicker");
 
+    $(document).on('keypress', '#local_dir_path', async function () {
+        if (event.which === 13) {
+            $("#list_local_files_button").click();
+        }
+    });
+
+    $(document).on('click', '#select-folder', async function () {
+        const input = document.getElementById('local_dir_path');
+        const button = document.getElementById('select-folder');
+        // Ask the main process to open the directory dialog
+        const selectedDirectory = await ipcRenderer.invoke('open-directory');
+        if (selectedDirectory) {
+            // Update the input field with the selected directory path
+            input.value = selectedDirectory;
+            // Trigger the file listing
+            $("#list_local_files_button").click();
+        } else {
+            console.log('No directory selected');
+        }
+    });
+
     $(document).on('click', 'a.dir-link', async function () {
         let new_dir = $('#local_dir_path').val();
         if (!new_dir.endsWith("/")) {

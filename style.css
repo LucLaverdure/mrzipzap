@@ -142,3 +142,107 @@ a.dir-link {
 a.dir-link:hover {
     color: white;
 }
+
+
+/* Container Layout */
+.container {
+    display: flex;
+    height: calc(100% - 50px); /* Full height minus header height */
+    padding: 10px;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+/* Pane (Folder Tree) */
+.pane.folder-tree {
+    width: 100%; /* Full width */
+    display: flex;
+    flex-direction: column;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+/* Directory Bar */
+.dir-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    background-color: #f0f0f0;
+}
+
+.dir-bar input {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.dir-bar button {
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.dir-bar button:hover {
+    background-color: #0056b3;
+}
+
+/* File List Section */
+.file-list {
+    flex-grow: 1; /* Allow the file list to fill the remaining space */
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Table Styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #ddd;
+}
+
+thead th {
+    background-color: #f0f0f0;
+    font-weight: bold;
+    text-align: left;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    position: sticky; /* Sticky header */
+    top: 0;
+    z-index: 1; /* Ensure the header stays above scrolling content */
+}
+
+/* Scrollable Tbody */
+tbody {
+    display: block;
+    overflow-y: auto; /* Enable vertical scrolling */
+    max-height: 100%; /* Allow the tbody to take up the available space */
+    width: 100%; /* Ensure proper alignment with the table header */
+}
+
+tbody tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed; /* Ensure consistent column widths */
+}
+
+tbody td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+/* Optional: Highlight rows on hover */
+tbody tr:hover {
+    background-color: #f1f1f1;
+}
