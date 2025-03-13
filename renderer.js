@@ -7,6 +7,8 @@ const formatSize = (bytes) => {
 
 jQuery(document).ready(function ($) {
 
+
+
     $(document).on('click', '#local-zip', async function () {
         let files = $.map($('#local_file_list input[type="checkbox"]:checked').closest('tr'), (row) => {
             return $(row).find('.pointer').attr('data-dir');
@@ -19,7 +21,7 @@ jQuery(document).ready(function ($) {
 
         // Listen for progress updates
         window.electron.onProgress((percent) => {
-            const $progressBar = $('#progress-bar');
+            const $progressBar = $('#progress-bar-zip');
             $progressBar.css('width', `${percent}%`);
             $progressBar.text(`${percent}%`);
         });
@@ -87,38 +89,25 @@ jQuery(document).ready(function ($) {
             // Ask the main process to list files in the specified folder
             const files = await window.electron.invoke('list-files', folderPath);
 
-            const tableBody = $('#local_file_list');
+            const tableBody = $('#file-explorer');
             tableBody.empty(); // Clear previous results
 
             if (files.error) {
                 // Display error message
-                tableBody.append(`<tr><td colspan="4" style="color: red;">${files.error}</td></tr>`);
+                tableBody.append(`<div style="color: red;">${files.error}</div>`);
             } else if (files.length === 0) {
                 // If no files are found
-                tableBody.append('<tr><td colspan="4">No files found in this folder.</td></tr>');
+                tableBody.append(`<div style="color: red;">No files found in this folder.</div>`);
             } else {
                 // Display the list of files with details
-                tableBody.append(`
-                        <tr>
-                            <td class="op">&nbsp;</td>
-                            <td><i style="color:yellow;" class="fas fa-folder" aria-hidden="true"></i><a class="dir-link" href="#" class="folder">..</a></td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                        </tr>
-                    `);
 
                 files.forEach((file) => {
                     let name = file.name;
                     let icon = file.isDirectory ? 'fas fa-folder' : 'fas fa-file';
                     let dir = folderPath.replace(/\/?$/, '/');
-                    name = file.isDirectory ? `<a class="dir-link pointer" href="#" class="folder" data-dir="${dir}${name}">${name}</a>` : `<span class="pointer" data-dir="${dir}${name}">${name}</span>`;
+                    let new_name = file.isDirectory ? `<a class="dir-link pointer folder" href="#" data-dir="${dir}${name}"> ${name}</a>` : `<span class="pointer" data-dir="${dir}${name}"> ${name}</span>`;
                     tableBody.append(`
-                        <tr>
-                            <td class="op"><input type="checkbox" /></td>
-                            <td><i style="color:yellow;" class="${icon}" aria-hidden="true"></i> ${name}</td>
-                            <td>${file.isDirectory ? '' : formatSize(file.size)}</td>
-                            <td>${file.modifiedDate}</td>
-                        </tr>
+                        <div class="file-item" draggable="true" data-file="${name}"><i style="color:yellow;" class="${icon}" aria-hidden="true"></i> ${new_name} (${file.isDirectory ? '' : formatSize(file.size)}) - ${file.modifiedDate}</div>
                     `);
                 });
             }
@@ -130,4 +119,98 @@ jQuery(document).ready(function ($) {
 
     $("#list_local_files_button").click();
 
+
+// Initialize variables
+    const $fileExplorer = $('#file-explorer');
+    const $dropContainer = $('#drop-container');
+    const $droppedFilesList = $('#dropped-files');
+    let selectedItems = []; // To keep track of selected items
+
+// Add click event for selecting multiple files
+    $fileExplorer.on('click', '.file-item', function () {
+        const $fileItem = $(this);
+
+        // Toggle selection
+        if ($fileItem.hasClass('selected')) {
+            $fileItem.removeClass('selected');
+            selectedItems = selectedItems.filter(item => item !== this);
+        } else {
+            $fileItem.addClass('selected');
+            selectedItems.push(this);
+        }
+    });
+
+// Drag start event for multiple selection
+    $fileExplorer.on('dragstart', '.file-item', function (e) {
+        if (selectedItems.length === 0) {
+            // If no files are selected, use the current dragged item
+            selectedItems = [this];
+            $(this).addClass('selected');
+        }
+
+        // Add dragging class to all selected items
+        selectedItems.forEach(item => $(item).addClass('dragging'));
+
+        // Allow the drag event
+        e.originalEvent.dataTransfer.setData('text/plain', ''); // Required for some browsers
+    });
+
+// Drag end event to remove dragging class
+    $fileExplorer.on('dragend', '.file-item', function () {
+        selectedItems.forEach(item => $(item).removeClass('dragging'));
+    });
+
+// Drop container event listeners
+    $dropContainer.on('dragover', function (e) {
+        e.preventDefault(); // Allow drop
+        $(this).addClass('drag-over');
+    });
+
+    $dropContainer.on('dragleave', function () {
+        $(this).removeClass('drag-over');
+    });
+
+    $dropContainer.on('drop', function (e) {
+        e.preventDefault();
+        $(this).removeClass('drag-over');
+
+        // Add dropped files to the list
+        selectedItems.forEach(item => {
+            const fileName = $(item).data('file');
+
+            // Append file name to the dropped files list
+            const $listItem = $('<li></li>').text(fileName);
+            $droppedFilesList.append($listItem);
+        });
+
+        console.log('Files dropped:', selectedItems.map(item => $(item).data('file')));
+
+        // Clear selection after drop
+        selectedItems.forEach(item => $(item).removeClass('selected'));
+        selectedItems = [];
+    });
+
+});
+
+$(document).ready(async function () {
+    const $sshSelect = $('#ssh-list');
+
+    try {
+        // Get the list of hosts from the main process
+        const hosts = await window.electron.getSSHConfigHosts();
+
+        if (hosts.length === 0) {
+            // Add an option indicating no SSH hosts were found
+            $sshSelect.append('<option disabled>No SSH hosts found</option>');
+        } else {
+            // Populate the dropdown with host entries
+            hosts.forEach((host) => {
+                $sshSelect.append(`<option value="${host}">${host}</option>`);
+            });
+        }
+    } catch (error) {
+        console.error('Error loading SSH hosts:', error);
+        // Add an option indicating an error occurred
+        $sshSelect.append('<option disabled>Error loading SSH hosts</option>');
+    }
 });

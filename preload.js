@@ -16,4 +16,5 @@ contextBridge.exposeInMainWorld('electron', {
 
     invoke: (channel, args) => ipcRenderer.invoke(channel, args),
 
+    getSSHConfigHosts: async () => await ipcRenderer.invoke('get-ssh-config-hosts')
 });

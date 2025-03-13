@@ -16,7 +16,9 @@
     <header class="header">
         <h1><img src="assets/logo.svg" alt="logo" /> Mr Zip Zap</h1>
         <div id="progress-container">
-            <div id="progress-bar">0%</div>
+            <div>Zip: <div id="progress-bar-zip">0%</div></div>
+            <div>Transfer: <div id="progress-bar-transfer">0%</div></div>
+            <div>Unzip: <div id="progress-bar-unzip">0%</div></div>
         </div>
     </header>
 
@@ -29,20 +31,7 @@
                 <button id="list_local_files_button">Go</button>
             </div>
 
-            <div class="file-list">
-                <table>
-                    <thead>
-                    <tr>
-                        <th>Op</th>
-                        <th>Name</th>
-                        <th>Size</th>
-                        <th>Date Modified</th>
-                    </tr>
-                    </thead>
-                    <tbody id="local_file_list">
-                    </tbody>
-                </table>
-            </div>
+            <div class="file-list" id="file-explorer"></div>
 
             <hr />
 
@@ -60,13 +49,29 @@
             <div class="mid-actions">
                 <div>
                     <h2>Protocol: SSH</h2>
-                    <hr/>
+                    <table>
+                        <tr>
+                            <th>~/.ssh/config:<label></label></th>
+                            <td><select id="ssh-list"></select></td>
+                        </tr>
+                        <tr>
+                            <th>Host:</th>
+                            <td><input id="remote_host" type="text" placeholder="Host" /></td>
+                        </tr>
+                        <tr>
+                            <th>Port:</th>
+                            <td><input id="remote_host" type="text" placeholder="Host" /></td>
+                        </tr>
+                        <tr>
+                            <th>User:</th>
+                            <td><input id="remote_host" type="text" placeholder="Host" /></td>
+                        </tr>
+                        <tr>
+                            <th>Pass:</th>
+                            <td><input id="remote_host" type="password" placeholder="Host" /></td>
+                        </tr>
+                    </table>
                     <p>
-                        Host: <input id="remote_host" type="text" placeholder="Host" /> <br/>
-                        Port: <input id="remote_port" type="text" placeholder="Port" value="22" /> <br/>
-                        User: <input id="remote_user" type="text" placeholder="User" /> <br/>
-                        Pass: <input id="remote_pass" type="password" placeholder="Password" /> <br/>
-                        <br/>
                         <button id="ssh">Connect</button>
                     </p>
                 </div>

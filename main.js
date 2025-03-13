@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const fs = require('fs');
 const path = require('path');
 const archiver = require('archiver');
+const os = require('os');
 
 let mainWindow;
 
@@ -126,3 +127,34 @@ ipcMain.on('zip-files', async (event, { files, outputZipPath }) => {
         event.reply('zip-error', error.message);
     }
 });
+
+// Read and parse ~/.ssh/config
+ipcMain.handle('get-ssh-config-hosts', async () => {
+    const sshConfigPath = path.join(os.homedir(), '.ssh', 'config');
+    try {
+        if (!fs.existsSync(sshConfigPath)) {
+            throw new Error('~/.ssh/config file does not exist');
+        }
+
+        const configContent = fs.readFileSync(sshConfigPath, 'utf-8');
+        const hostEntries = parseSSHConfig(configContent);
+        return hostEntries; // Send host entries to the renderer
+    } catch (error) {
+        console.error('Error reading SSH config:', error);
+        throw error;
+    }
+});
+
+// Helper function to parse SSH config and extract `Host` entries
+function parseSSHConfig(configContent) {
+    const lines = configContent.split('\n');
+    const hosts = [];
+    for (const line of lines) {
+        const trimmed = line.trim();
+        if (trimmed.startsWith('Host ') && !trimmed.startsWith('Host *')) {
+            const host = trimmed.split(' ')[1]; // Get the host name
+            hosts.push(host);
+        }
+    }
+    return hosts;
+}
