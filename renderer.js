@@ -107,7 +107,7 @@ jQuery(document).ready(function ($) {
                     let dir = folderPath.replace(/\/?$/, '/');
                     let new_name = file.isDirectory ? `<a class="dir-link pointer folder" href="#" data-dir="${dir}${name}"> ${name}</a>` : `<span class="pointer" data-dir="${dir}${name}"> ${name}</span>`;
                     tableBody.append(`
-                        <div class="file-item" draggable="true" data-file="${name}"><i style="color:yellow;" class="${icon}" aria-hidden="true"></i> ${new_name} (${file.isDirectory ? '' : formatSize(file.size)}) - ${file.modifiedDate}</div>
+                        <div class="file-item" draggable="true" data-file="${name}"><i style="color:yellow;" class="${icon}" aria-hidden="true"></i> ${new_name} ${file.isDirectory ? '' : '('+formatSize(file.size)+')'} - ${file.modifiedDate}</div>
                     `);
                 });
             }
