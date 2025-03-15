@@ -27,12 +27,15 @@ function resolvePath(path) {
 
 jQuery(document).ready(function ($) {
 
-
-
     $(document).on('click', '#local-zip', async function () {
         let files = $.map($('#file-explorer .file-item.selected'), (row) => {
             return $(row).find('.pointer').attr('data-dir');
         });
+
+        if (files.length === 0) {
+            alert('Please select files to zip!');
+            return;
+        }
 
         const outputZipPath = `tmp-mr-zip-zap.zip`; // Define output location
 
