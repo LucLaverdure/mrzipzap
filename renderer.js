@@ -5,12 +5,32 @@ const formatSize = (bytes) => {
     return `${(bytes / (1024 * 1024 * 1024)).toFixed(2)} GB`;
 };
 
+function resolvePath(path) {
+    const parts = path.split('/'); // Split the path into segments
+    const stack = [];
+
+    for (const part of parts) {
+        if (part === '' || part === '.') {
+            // Ignore empty or current directory segments
+            continue;
+        } else if (part === '..') {
+            // Go up one directory (remove the last valid segment)
+            stack.pop();
+        } else {
+            // Add the segment to the stack
+            stack.push(part);
+        }
+    }
+
+    return '/' + stack.join('/');
+}
+
 jQuery(document).ready(function ($) {
 
 
 
     $(document).on('click', '#local-zip', async function () {
-        let files = $.map($('#local_file_list input[type="checkbox"]:checked').closest('tr'), (row) => {
+        let files = $.map($('#file-explorer .file-item.selected'), (row) => {
             return $(row).find('.pointer').attr('data-dir');
         });
 
@@ -28,7 +48,7 @@ jQuery(document).ready(function ($) {
 
         // Handle completion
         window.electron.onDone(() => {
-            alert('Zipping completed successfully!');
+            // alert('Zipping completed successfully!');
         });
 
         // Handle errors
@@ -71,14 +91,15 @@ jQuery(document).ready(function ($) {
         if (!new_dir.endsWith("/")) {
             new_dir = new_dir + "/";
         }
-        new_dir = new_dir + $(this).text();
+        new_dir = $(this).attr('data-dir');
         $('#local_dir_path').val(new_dir);
         $("#list_local_files_button").click();
     });
 
     // Trigger file listing when the button is clicked
     $('#list_local_files_button').on('click', async function () {
-        const folderPath = $('#local_dir_path').val(); // Get the folder path from the textbox
+        const folderPath = resolvePath($('#local_dir_path').val());
+        $('#local_dir_path').val(folderPath);
 
         if (!folderPath) {
             alert('Please enter a folder path!');
@@ -100,6 +121,13 @@ jQuery(document).ready(function ($) {
                 tableBody.append(`<div style="color: red;">No files found in this folder.</div>`);
             } else {
                 // Display the list of files with details
+                let name = '..';
+                let icon = 'fas fa-folder';
+                let dir = folderPath.replace(/\/?$/, '/');
+                let new_name = `<a class="dir-link pointer folder" href="#" data-dir="${dir}${name}"> ${name}</a>`;
+                tableBody.append(`
+                        <div class="file-item" draggable="true" data-file="${name}"><i style="color:yellow;" class="${icon}" aria-hidden="true"></i> ${new_name}</div>
+                    `);
 
                 files.forEach((file) => {
                     let name = file.name;
@@ -129,6 +157,10 @@ jQuery(document).ready(function ($) {
 // Add click event for selecting multiple files
     $fileExplorer.on('click', '.file-item', function () {
         const $fileItem = $(this);
+
+        if ($fileItem.attr('data-file').endsWith('..')) {
+            return;
+        }
 
         // Toggle selection
         if ($fileItem.hasClass('selected')) {
